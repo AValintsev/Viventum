@@ -94,10 +94,22 @@ $(window).resize(function(){
     }
 });
 
-$('.my-cookie').show();
-$('.my-cookie a').on('click',function(e){
-  e.preventDefault();
-  $('.my-cookie').fadeOut(300);
-});
+  function handleCookie() {
+    const cookieOk = Cookies.get('cookie_ok');
+    
+    if (!cookieOk || cookieOk === '') {
 
+      $('.my-cookie').show();
+      $('.my-cookie a').on('click', function (e) {
+        e.preventDefault();
+        Cookies.set('cookie_ok', "cookie_ok", { expires: 365 });
+        $('.my-cookie').fadeOut(300);
+      });      
+    }
+
+    
+
+  }
+
+  handleCookie();
 });

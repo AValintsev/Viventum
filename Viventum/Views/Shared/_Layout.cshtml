@@ -153,7 +153,10 @@
                 <li><span>können, finden Sie in unseren</span></li>
                 <li><span>Datenschutzhinweisen.</span></li>
                 <li></li>
-                <li><a href="#" class="accept">Akzeptieren</a><a href="#" class="refuse">Nicht akzeptieren</a></li>
+                <li>
+                    <a href="javascript:void(0)" id="cookie-accept" class="accept">Akzeptieren</a>
+                    <a href="#" class="refuse">Nicht akzeptieren</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -163,26 +166,11 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
+    <script src="~/js/js.cookie.min.js"></script>
     <script src="~/js/libs.min.js"></script>
+
     <script src="~/js/main.js"></script>
 
-    <script src="~/js/js.cookie.min.js"></script>
-    <script>
-        const cookieOk = Cookies.get('cookie_ok');
-        if (!cookieOk || cookieOk === '') {
-            let cookiesElement = document.getElementsByClassName("cookie")[0];
-            cookiesElement.style.display = 'block';
-            const btn = document.getElementsByClassName("cookie__close")[0];
-            btn.addEventListener("click", event => {
-                if (!cookieOk || cookieOk === '') {
-                    Cookies.set('cookie_ok', "cookie_ok", { expires: 365 });
-                    cookiesElement.style.display = 'none';
-                }
-            });
-        }
-
-    </script>
     <script>
         // Typed.js
         var options = {

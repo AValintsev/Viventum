@@ -19,11 +19,6 @@ namespace Viventum.Controllers
             return View();
         }
 
-        public PartialViewResult ContactForm()
-        {
-            return PartialView(new ContactModel());
-        }
-
         [HttpPost]
         public PartialViewResult ContactForm(ContactModel model)
         {
@@ -39,7 +34,7 @@ namespace Viventum.Controllers
 
             }
 
-            return PartialView(new ContactModel());
+            return PartialView("_ContactForm", new ContactModel());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
