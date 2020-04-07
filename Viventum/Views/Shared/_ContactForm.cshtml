@@ -58,8 +58,11 @@
                         Füllen Sie das Kontaktformular aus und teilen Sie uns Ihr Anliegen mit.
                         Wir setzen uns umgehend mit Ihnen in Verbindung.
                     </p>
-                    <form asp-action="ContactForm" asp-controller="Home" method="post"
-                          data-ajax="true" data-ajax-method="post" data-ajax-complete="completed">
+                    <form data-ajax="true"
+                          data-ajax-method="POST"
+                          data-ajax-mode="replace"
+                          data-ajax-success="completed"
+                          asp-action="ContactForm" asp-controller="Home" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <label asp-for="Name">
                             <p><span>*</span>Name</p>
@@ -88,19 +91,17 @@
                         </label>
                         <button type="submit"><span>Nachricht senden</span></button>
                     </form>
+                    <div id="result" style="display: none"></div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-@section Scripts {
+<script>
 
-    <script>
-        completed = () => {
-            alert('Posted using Unobtrusive AJAX');
-        };
-    </script>
+    function completed(response) {
+        $('#result').show().html(response);
+    }
 
-
-}
+</script>

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Viventum.Options;
+using Viventum.Services;
+using Viventum.Services.Interfaces;
 
 namespace Viventum
 {
@@ -22,6 +25,13 @@ namespace Viventum
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var emailSenderSection = Configuration.GetSection("EmailSender");
+            services.Configure<EmailSenderSettings>(emailSenderSection);
+            var emailSenderSettings = emailSenderSection.Get<EmailSenderSettings>();
+            services.AddSingleton(emailSenderSettings);
+
+            services.AddTransient<IEmailSender, EmailSender>();
+
             services.AddControllersWithViews();
         }
 
