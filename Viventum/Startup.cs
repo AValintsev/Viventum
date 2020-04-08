@@ -31,6 +31,10 @@ namespace Viventum
             services.AddSingleton(emailSenderSettings);
 
             services.AddTransient<IEmailSender, EmailSender>();
+            
+            services
+                .AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false)
+                .AddRazorRuntimeCompilation();
 
             services.AddControllersWithViews();
         }

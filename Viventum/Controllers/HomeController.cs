@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
@@ -15,15 +16,17 @@ namespace Viventum.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IEmailSender _emailSender;
         private readonly EmailSenderSettings _emailSenderSettings;
-
+        private readonly IHostingEnvironment _environment;
         public HomeController(
             ILogger<HomeController> logger,
             IEmailSender emailSender,
-            EmailSenderSettings emailSenderSettings)
+            EmailSenderSettings emailSenderSettings,
+            IHostingEnvironment environment)
         {
             _logger = logger;
             _emailSender = emailSender;
             _emailSenderSettings = emailSenderSettings;
+            _environment = environment;
         }
 
         public IActionResult Index()
@@ -37,33 +40,32 @@ namespace Viventum.Controllers
         {
             if (ModelState.IsValid)
             {
-                var html = $"<div>Hi, you have new contact form request:" +
-                    $"<ul>" +
-                    $"<li>Name: {model.Name}</li>" +
-                    $"<li>Company: {model.Company}</li>" +
-                    $"<li>Email: {model.Email}</li>" +
-                    $"<li>Subject: {model.Subject}</li>" +
-                    $"<li>Message: {model.Message}</li>" +
-                    $"</ul>" +
-                    $"</div>";
-
                 try
                 {
+                    var tmpl = System.IO.File.ReadAllText(
+                       Path.Combine(_environment.WebRootPath,
+                       "html/email.tpl"));
+                    var html =
+                        tmpl.Replace("{{Name}}", model.Name)
+                            .Replace("{{Company}}", model.Company)
+                            .Replace("Email", model.Email)
+                            .Replace("Subject", model.Subject)
+                            .Replace("Message", model.Message);
+
                     if (!string.IsNullOrWhiteSpace(_emailSenderSettings.FolderPath))
                     {
                         System.IO.File.WriteAllText(
-                            Path.Combine(_emailSenderSettings.FolderPath,
+                            Path.Combine(_environment.ContentRootPath,
+                            "contact-forms",
                             $"{DateTime.Now.ToString().Replace(".", "-").Replace(" ", "-").Replace(":", "-")}.html"),
                             html);
                     }
+
+                    await _emailSender.SendEmailToAdminAsync("New contact request", html);
                 }
                 catch (Exception e)
                 {
                     return PartialView("_Error");
-                }
-                finally
-                {
-                    await _emailSender.SendEmailToAdminAsync("New contact request", html);
                 }
 
                 return PartialView("_Success");
